@@ -26,4 +26,10 @@ describe("currentuser", () => {
     ]);
     expect(response.body.currentUser.email).toEqual(validUser.email);
   });
+  it("responds with null if not authenticated", async () => {
+    const response = await getCurrenctUser();
+
+    expect(Object.keys(response.body)).toEqual(["currentUser"]);
+    expect(response.body.currentUser).toBeNull();
+  });
 });
