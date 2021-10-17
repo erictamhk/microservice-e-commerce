@@ -1,17 +1,8 @@
 import request from "supertest";
+import { validUser, InputUser } from "../../test/setup";
 import { app } from "../../app";
 
-const validUser = {
-  email: "user1@mail.com",
-  password: "P4ssword",
-};
-
-interface inputUser {
-  email?: string;
-  password?: string;
-}
-
-const signupUser = (user: inputUser = { ...validUser }) => {
+const signupUser = (user: InputUser = { ...validUser }) => {
   return request(app).post("/api/users/signup").send(user);
 };
 
