@@ -10,3 +10,10 @@ This project is base on this cource
 # start
 
 `skaffold dev`
+
+# jwt secret key
+
+Set your own secret key and using base64 to encode the secret key
+rename the file jwt-secret.yaml.sample to jwt-secret.yaml
+copy the encoded key to the file jwt-secret.yaml
+`JWT_KEY: YOUR KEY HERE`
