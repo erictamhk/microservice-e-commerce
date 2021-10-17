@@ -7,6 +7,14 @@ This project is using minikube for local kubernetes cluster
 This project is base on this cource
 [Microservices with Node JS and React](https://www.udemy.com/course/microservices-with-node-js-and-react/)
 
+# before start
+
+You need to build all docker images before start
+
+`docker built -t eric/client-next ./client`
+
+`docker built -t eric/auth ./auth`
+
 # start
 
 `skaffold dev`
