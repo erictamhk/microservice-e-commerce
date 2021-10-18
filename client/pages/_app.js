@@ -12,8 +12,6 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 };
 
 AppComponent.getInitialProps = async (appContext) => {
-  console.log("app component getInitialProps");
-
   let pageProps = {};
   try {
     if (appContext.Component.getInitialProps) {
@@ -36,8 +34,6 @@ AppComponent.getInitialProps = async (appContext) => {
     pageProps,
     currentUser,
   };
-
-  console.log(returnData);
 
   return returnData;
 };
