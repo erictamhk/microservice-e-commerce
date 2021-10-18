@@ -15,6 +15,8 @@ You need to build all docker images before start
 
 `docker built -t eric/auth ./auth`
 
+`docker built -t eric/tickets ./tickets`
+
 # using ingress-nginx
 
 start the ingress-nginx in your kubernetes
