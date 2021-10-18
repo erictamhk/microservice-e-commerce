@@ -15,6 +15,12 @@ You need to build all docker images before start
 
 `docker built -t eric/auth ./auth`
 
+# using ingress-nginx
+
+start the ingress-nginx in your kubernetes
+if using minikube
+`minikube addons enable ingress`
+
 # start
 
 `skaffold dev`
