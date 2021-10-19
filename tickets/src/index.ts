@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { app } from "./app";
+import { natsWrapper } from "./nats-wrapper";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -7,6 +8,12 @@ const start = async () => {
   }
   if (!process.env.MONGO_URI) {
     throw new Error("MONGO_URI must be definded");
+  }
+  try {
+    await natsWrapper.connect("ticketing", "client-id", "http://nats-srv:4222");
+    console.log("connected to NATs");
+  } catch (err) {
+    console.error(err);
   }
   try {
     await mongoose.connect(process.env.MONGO_URI);
