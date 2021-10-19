@@ -12,6 +12,14 @@ const start = async () => {
   try {
     await natsWrapper.connect("ticketing", "client-id", "http://nats-srv:4222");
     console.log("connected to NATs");
+
+    natsWrapper.client.on("close", () => {
+      console.log("NATs connection closed!");
+      process.exit();
+    });
+
+    process.on("SIGINT", () => natsWrapper.client.close());
+    process.on("SIGTERM", () => natsWrapper.client.close());
   } catch (err) {
     console.error(err);
   }
