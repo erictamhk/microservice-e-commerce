@@ -32,7 +32,15 @@ describe("update", () => {
       { cookie: undefined }
     ).expect(401);
   });
-  // it("returns a 401 if the user dose not own the ticket", async () => {});
+  it("returns a 401 if the user dose not own the ticket", async () => {
+    const oriTicketResponse = await successTicket();
+
+    await updateTicket(
+      oriTicketResponse.body.id,
+      { title: "updated-title", price: 200 },
+      { cookie: getValidCookie({ email: "abc@abc.com", id: "fake-id" }) }
+    ).expect(401);
+  });
   // it("return a 400 if the user provides an invalid title or price", async () => {});
   // it("updates the ticket provided valid inputs", async () => {});
 });
