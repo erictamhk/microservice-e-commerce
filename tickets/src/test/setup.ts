@@ -44,6 +44,21 @@ export interface InputOptions {
   cookie?: string[];
 }
 
+export const postTicket = (
+  ticket: InputTicket = { ...validTicket },
+  options: InputOptions = {}
+) => {
+  const agent = request(app).post("/api/tickets");
+  if (options.cookie) {
+    agent.set("Cookie", options.cookie);
+  }
+  return agent.send(ticket);
+};
+
+export const successTicket = () => {
+  return postTicket({ ...validTicket }, { cookie: signup() });
+};
+
 global.signup = (): string[] => {
   const payload = {
     email: "user1@mail.com",

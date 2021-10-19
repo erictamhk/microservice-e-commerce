@@ -1,18 +1,5 @@
-import request from "supertest";
-import { app } from "../../app";
-import { InputOptions, InputTicket, validTicket } from "../../test/setup";
+import { validTicket, postTicket } from "../../test/setup";
 import { Ticket } from "../../models/ticket";
-
-const postTicket = (
-  ticket: InputTicket = { ...validTicket },
-  options: InputOptions = {}
-) => {
-  const agent = request(app).post("/api/tickets");
-  if (options.cookie) {
-    agent.set("Cookie", options.cookie);
-  }
-  return agent.send(ticket);
-};
 
 describe("create", () => {
   it("has a route handler listening to /api/tickets for post request", async () => {
