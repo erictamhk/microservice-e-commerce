@@ -1,4 +1,4 @@
-import { validTicket, postTicket } from "../../test/setup";
+import { getValidCookie, validTicket, postTicket } from "../../test/setup";
 import { Ticket } from "../../models/ticket";
 
 describe("create", () => {
@@ -11,29 +11,33 @@ describe("create", () => {
     await postTicket().expect(401);
   });
   it("returns a status other than 401 if the user is signed in", async () => {
-    const response = await postTicket({}, { cookie: signup() });
+    const response = await postTicket({}, { cookie: getValidCookie() });
 
     expect(response.status).not.toEqual(401);
   });
   it("returns an error if an invalid title is provided", async () => {
-    await postTicket({ title: "", price: 10 }, { cookie: signup() }).expect(
-      400
-    );
-    await postTicket({ price: 10 }, { cookie: signup() }).expect(400);
+    await postTicket(
+      { title: "", price: 10 },
+      { cookie: getValidCookie() }
+    ).expect(400);
+    await postTicket({ price: 10 }, { cookie: getValidCookie() }).expect(400);
   });
   it("returns an error if an invalid price is provied", async () => {
     await postTicket(
       { title: "ticket-title", price: -10 },
-      { cookie: signup() }
+      { cookie: getValidCookie() }
     ).expect(400);
-    await postTicket({ title: "ticket-title" }, { cookie: signup() }).expect(
-      400
-    );
+    await postTicket(
+      { title: "ticket-title" },
+      { cookie: getValidCookie() }
+    ).expect(400);
   });
   it("creates a ticket with valid inputs", async () => {
     let tickets = await Ticket.find({});
     expect(tickets.length).toEqual(0);
-    await postTicket({ ...validTicket }, { cookie: signup() }).expect(201);
+    await postTicket({ ...validTicket }, { cookie: getValidCookie() }).expect(
+      201
+    );
     tickets = await Ticket.find({});
     expect(tickets.length).toEqual(1);
     expect(tickets[0].title).toEqual(validTicket.title);

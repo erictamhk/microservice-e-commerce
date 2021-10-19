@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import {
   successTicket,
+  getValidCookie,
   validTicket,
   InputTicket,
   InputOptions,
@@ -10,8 +11,8 @@ import { Ticket } from "../../models/ticket";
 
 const updateTicket = (
   ticketId: string = "test-ticket-id",
-  ticket: InputTicket = {},
-  options: InputOptions = {}
+  ticket: InputTicket = { ...validTicket },
+  options: InputOptions = { cookie: getValidCookie() }
 ) => {
   const agent = request(app).put(`/api/tickets/${ticketId}`);
   if (options.cookie) {

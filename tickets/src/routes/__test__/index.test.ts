@@ -1,7 +1,6 @@
 import request from "supertest";
 import { app } from "../../app";
-import { successTicket, validTicket } from "../../test/setup";
-import { Ticket } from "../../models/ticket";
+import { successTicket } from "../../test/setup";
 
 const getTickets = () => {
   return request(app).get(`/api/tickets`).send({});

@@ -26,10 +26,6 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-declare global {
-  var signup: () => string[];
-}
-
 export const validTicket = {
   title: "test title",
   price: 100.0,
@@ -56,15 +52,15 @@ export const postTicket = (
 };
 
 export const successTicket = () => {
-  return postTicket({ ...validTicket }, { cookie: signup() });
+  return postTicket({ ...validTicket }, { cookie: getValidCookie() });
 };
 
-global.signup = (): string[] => {
-  const payload = {
+export const getValidCookie = (
+  payload = {
     email: "user1@mail.com",
     id: "payload-id",
-  };
-
+  }
+): string[] => {
   const token = jwt.sign(payload, process.env.JWT_KEY!);
 
   const session = { jwt: token };
