@@ -68,5 +68,21 @@ describe("update", () => {
       { cookie: getValidCookie() }
     ).expect(400);
   });
-  // it("updates the ticket provided valid inputs", async () => {});
+  it("updates the ticket provided valid inputs", async () => {
+    const oriTicketResponse = await successTicket();
+
+    await updateTicket(
+      oriTicketResponse.body.id,
+      { title: "updated-title", price: 200 },
+      { cookie: getValidCookie() }
+    ).expect(200);
+
+    const ticket = await Ticket.findById(oriTicketResponse.body.id);
+
+    expect(ticket?.title).not.toEqual(validTicket.title);
+    expect(ticket?.price).not.toEqual(validTicket.price);
+
+    expect(ticket?.title).toEqual("updated-title");
+    expect(ticket?.price).toEqual(200);
+  });
 });
