@@ -41,6 +41,32 @@ describe("update", () => {
       { cookie: getValidCookie({ email: "abc@abc.com", id: "fake-id" }) }
     ).expect(401);
   });
-  // it("return a 400 if the user provides an invalid title or price", async () => {});
+  it("return a 400 if the user provides an invalid title or price", async () => {
+    const oriTicketResponse = await successTicket();
+
+    await updateTicket(
+      oriTicketResponse.body.id,
+      { title: "", price: 200 },
+      { cookie: getValidCookie() }
+    ).expect(400);
+
+    await updateTicket(
+      oriTicketResponse.body.id,
+      { price: 200 },
+      { cookie: getValidCookie() }
+    ).expect(400);
+
+    await updateTicket(
+      oriTicketResponse.body.id,
+      { title: "updated-title", price: -200 },
+      { cookie: getValidCookie() }
+    ).expect(400);
+
+    await updateTicket(
+      oriTicketResponse.body.id,
+      { title: "updated-title" },
+      { cookie: getValidCookie() }
+    ).expect(400);
+  });
   // it("updates the ticket provided valid inputs", async () => {});
 });
