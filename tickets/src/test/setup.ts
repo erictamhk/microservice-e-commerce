@@ -4,6 +4,8 @@ import request from "supertest";
 import jwt from "jsonwebtoken";
 import { app } from "../app";
 
+jest.mock("../nats-wrapper");
+
 let mongo: MongoMemoryServer;
 beforeAll(async () => {
   process.env.JWT_KEY = "testing-key";
