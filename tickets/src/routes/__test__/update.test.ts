@@ -8,6 +8,7 @@ import {
   InputOptions,
 } from "../../test/setup";
 import { Ticket } from "../../models/ticket";
+import { natsWrapper } from "../../nats-wrapper";
 
 const updateTicket = (
   ticketId: string = "test-ticket-id",
@@ -84,5 +85,17 @@ describe("update", () => {
 
     expect(ticket?.title).toEqual("updated-title");
     expect(ticket?.price).toEqual(200);
+  });
+
+  it("publishes an event", async () => {
+    const oriTicketResponse = await successTicket();
+    jest.clearAllMocks();
+
+    await updateTicket(
+      oriTicketResponse.body.id,
+      { title: "updated-title", price: 200 },
+      { cookie: getValidCookie() }
+    ).expect(200);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

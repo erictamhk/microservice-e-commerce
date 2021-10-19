@@ -1,5 +1,6 @@
 import { getValidCookie, validTicket, postTicket } from "../../test/setup";
 import { Ticket } from "../../models/ticket";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("create", () => {
   it("has a route handler listening to /api/tickets for post request", async () => {
@@ -42,5 +43,12 @@ describe("create", () => {
     expect(tickets.length).toEqual(1);
     expect(tickets[0].title).toEqual(validTicket.title);
     expect(tickets[0].price).toEqual(validTicket.price);
+  });
+
+  it("publishes an event", async () => {
+    await postTicket({ ...validTicket }, { cookie: getValidCookie() }).expect(
+      201
+    );
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
