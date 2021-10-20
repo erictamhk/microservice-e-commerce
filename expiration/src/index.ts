@@ -28,6 +28,8 @@ const start = async () => {
   } catch (err) {
     console.error(err);
   }
+
+  console.log("expiration v1");
 };
 
 start();
