@@ -1,5 +1,5 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import request from "supertest";
 import jwt from "jsonwebtoken";
 import { app } from "../app";
@@ -32,6 +32,23 @@ afterAll(async () => {
 export interface InputOptions {
   cookie?: string[];
 }
+
+export interface OrderOptions {
+  ticketId?: string;
+}
+
+export const postOrder = (
+  orderBody: OrderOptions = {
+    ticketId: new mongoose.Types.ObjectId().toHexString(),
+  },
+  options: InputOptions = {}
+) => {
+  const agent = request(app).post("/api/orders");
+  if (options.cookie) {
+    agent.set("Cookie", options.cookie);
+  }
+  return agent.send(orderBody);
+};
 
 export const getValidCookie = (
   payload = {
