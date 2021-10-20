@@ -5,6 +5,7 @@ import { app } from "../../app";
 import { getValidCookie } from "../../test/setup";
 import { Order, OrderDoc } from "../../models/order";
 import { stripe } from "../../stripe";
+import { Payment } from "../../models/payment";
 
 const createOrder = async (
   userId: string = "user1",
@@ -67,5 +68,11 @@ describe("create payment", () => {
     expect(chargeOptions.source).toEqual("tok_visa");
     expect(chargeOptions.amount).toEqual(order.price * 100);
     expect(chargeOptions.currency).toEqual("usd");
+
+    const payment = await Payment.findOne({
+      orderId: order.id,
+    });
+    expect(payment?.orderId).toEqual(order.id);
+    expect(payment?.stripeId).toEqual("charge-id");
   });
 });
