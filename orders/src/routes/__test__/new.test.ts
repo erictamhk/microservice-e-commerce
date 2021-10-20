@@ -59,4 +59,5 @@ describe("new order", () => {
     ).expect(201);
   });
   // it("", async () => {});
+  it.todo("emits an order created event");
 });
