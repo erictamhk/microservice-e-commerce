@@ -9,6 +9,7 @@ import {
   NotAuthorizedError,
   OrderStatus,
 } from "@sgtickets/common";
+import { stripe } from "../stripe";
 import { OrderDoc, Order } from "../models/order";
 
 const router = express.Router();
@@ -46,6 +47,12 @@ router.post(
     if (order.status === OrderStatus.Complete) {
       throw new BadRequestError("Cannot pay for an complete order");
     }
+
+    await stripe.charges.create({
+      currency: "usd",
+      amount: order.price * 100,
+      source: token,
+    });
 
     res.send({ success: true });
   }

@@ -20,6 +20,9 @@ const start = async () => {
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error("NATS_CLIENT_ID must be definded");
   }
+  if (!process.env.STRIPE_KEY) {
+    throw new Error("STRIPE_KEY must be definded");
+  }
   try {
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,
@@ -48,7 +51,7 @@ const start = async () => {
     console.error(err);
   }
   app.listen(3000, () => {
-    console.log("payments v1");
+    console.log("payments v2");
     console.log("Listening to port 3000");
   });
 };
