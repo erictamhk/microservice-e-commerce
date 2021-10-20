@@ -7,6 +7,8 @@ import {
   OrderStatus,
 } from "@sgtickets/common";
 import { Order } from "../models/order";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publish";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -30,7 +32,13 @@ router.delete(
     order.status = OrderStatus.Cancelled;
     await order.save();
 
-    //TODO: need to publish the order cancelled event
+    await new OrderCancelledPublisher(natsWrapper.client).publish({
+      id: order.id,
+      version: 1,
+      ticket: {
+        id: order.ticket.id,
+      },
+    });
 
     res.send(order);
   }
