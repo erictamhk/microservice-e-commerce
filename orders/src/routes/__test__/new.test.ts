@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { postOrder, getValidCookie } from "../../test/setup";
 
 describe("new order", () => {
@@ -19,8 +20,11 @@ describe("new order", () => {
     await postOrder({ ticketId: "" }, { cookie: getValidCookie() }).expect(400);
     await postOrder({}, { cookie: getValidCookie() }).expect(400);
   });
-  // it("", async () => {});
-  // it("", async () => {});
-  // it("", async () => {});
+  it("returns an error if the ticket does not exist", async () => {
+    const ticketId = new mongoose.Types.ObjectId().toHexString();
+    await postOrder({ ticketId }, { cookie: getValidCookie() }).expect(404);
+  });
+  // it("return an error if the ticket is already reserved", async () => {});
+  // it("reserves a ticket", async () => {});
   // it("", async () => {});
 });
