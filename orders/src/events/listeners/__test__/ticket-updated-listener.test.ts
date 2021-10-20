@@ -54,6 +54,39 @@ describe("ticket updated listener", () => {
 
     expect(msg.ack).toHaveBeenCalled();
   });
-  // it("", async () => {});
+  it("dose not call ack if the event has a skipped version number", async () => {
+    const { listener, data, msg, ticket: beforeTicket } = await setup();
+
+    data.version = beforeTicket!.version + 10000;
+    try {
+      await listener.onMessage(data, msg);
+    } catch (err) {}
+
+    // const ticket = await Ticket.findById(data.id);
+    // expect(ticket).toBeDefined();
+    // expect(ticket!.title).toEqual(data.title);
+    // expect(ticket!.price).toEqual(data.price);
+    // expect(ticket!.title).not.toEqual(beforeTicket!.title);
+    // expect(ticket!.price).not.toEqual(beforeTicket!.price);
+    // expect(ticket!.version).toBeGreaterThan(beforeTicket!.version);
+
+    expect(msg.ack).not.toHaveBeenCalled();
+  });
+  it("dose not change the ticket if the event has a skipped version number", async () => {
+    const { listener, data, msg, ticket: beforeTicket } = await setup();
+
+    data.version = beforeTicket!.version + 10000;
+    try {
+      await listener.onMessage(data, msg);
+    } catch (err) {}
+
+    const ticket = await Ticket.findById(data.id);
+    expect(ticket).toBeDefined();
+    expect(ticket!.title).not.toEqual(data.title);
+    expect(ticket!.price).not.toEqual(data.price);
+    expect(ticket!.title).toEqual(beforeTicket!.title);
+    expect(ticket!.price).toEqual(beforeTicket!.price);
+    expect(ticket!.version).toEqual(beforeTicket!.version);
+  });
   // it("", async () => {});
 });
