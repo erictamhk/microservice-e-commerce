@@ -46,6 +46,17 @@ describe("new order", () => {
       { cookie: getValidCookie() }
     ).expect(400);
   });
-  // it("reserves a ticket", async () => {});
+  it("reserves a ticket", async () => {
+    const ticket = Ticket.build({
+      title: "concert",
+      price: 20,
+    });
+    await ticket.save();
+
+    await postOrder(
+      { ticketId: ticket.id },
+      { cookie: getValidCookie() }
+    ).expect(201);
+  });
   // it("", async () => {});
 });
