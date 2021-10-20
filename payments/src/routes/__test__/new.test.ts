@@ -4,6 +4,7 @@ import { OrderStatus } from "@sgtickets/common";
 import { app } from "../../app";
 import { getValidCookie } from "../../test/setup";
 import { Order, OrderDoc } from "../../models/order";
+import { stripe } from "../../stripe";
 
 const createOrder = async (
   userId: string = "user1",
@@ -55,5 +56,16 @@ describe("create payment", () => {
     const order = await createOrder(user.id, OrderStatus.Complete);
     const cookie = getValidCookie(user);
     await postPayment("test-token", order.id, { cookie }).expect(400);
+  });
+  it("returns a 201 with valid inputs", async () => {
+    const user = { email: "user2@mail.com", id: "user2" };
+    const order = await createOrder(user.id);
+    const cookie = getValidCookie(user);
+    await postPayment("tok_visa", order.id, { cookie }).expect(201);
+
+    const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+    expect(chargeOptions.source).toEqual("tok_visa");
+    expect(chargeOptions.amount).toEqual(order.price * 100);
+    expect(chargeOptions.currency).toEqual("usd");
   });
 });
