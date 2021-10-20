@@ -31,13 +31,13 @@ const setup = async () => {
     ack: jest.fn(),
   };
 
-  return { listener, data, msg };
+  return { listener, data, msg, ticket };
 };
 
 describe("ticket updated listener", () => {
   it("finds, updates, and saves a ticket", async () => {
-    const { listener, data, msg } = await setup();
-    const beforeTicket = await Ticket.findById(data.id);
+    const { listener, data, msg, ticket: beforeTicket } = await setup();
+
     await listener.onMessage(data, msg);
 
     const ticket = await Ticket.findById(data.id);
