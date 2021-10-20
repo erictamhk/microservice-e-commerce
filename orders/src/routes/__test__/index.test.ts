@@ -1,20 +1,23 @@
 import request from "supertest";
+import mongoose from "mongoose";
 import { app } from "../../app";
 import { Order, OrderDoc, OrderStatus } from "../../models/order";
 import { Ticket, TicketDoc } from "../../models/ticket";
 import { getValidCookie } from "../../test/setup";
 
 const createTickets = async (num: number): Promise<TicketDoc[]> => {
-  const ticketIds: TicketDoc[] = [];
+  const tickets: TicketDoc[] = [];
   for (let i = 0; i < num; i++) {
+    const ticketId = new mongoose.Types.ObjectId().toHexString();
     const ticket = Ticket.build({
       title: `concert${i}`,
       price: 20 + i,
+      id: ticketId,
     });
     await ticket.save();
-    ticketIds.push(ticket);
+    tickets.push(ticket);
   }
-  return ticketIds;
+  return tickets;
 };
 
 const createOrder = async (

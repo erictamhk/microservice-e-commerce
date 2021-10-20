@@ -1,9 +1,20 @@
 import mongoose from "mongoose";
 import { Order, OrderStatus } from "../../models/order";
-import { Ticket } from "../../models/ticket";
+import { Ticket, TicketDoc } from "../../models/ticket";
 import { postOrder, getValidCookie } from "../../test/setup";
 
 import { natsWrapper } from "../../nats-wrapper";
+
+const createTickets = async (): Promise<TicketDoc> => {
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
+  const ticket = Ticket.build({
+    title: `concert-test`,
+    price: 20,
+    id: ticketId,
+  });
+  await ticket.save();
+  return ticket;
+};
 
 describe("new order", () => {
   it("can only be accessed if the user is signed in", async () => {
@@ -29,11 +40,7 @@ describe("new order", () => {
     await postOrder({ ticketId }, { cookie: getValidCookie() }).expect(404);
   });
   it("return an error if the ticket is already reserved", async () => {
-    const ticket = Ticket.build({
-      title: "concert",
-      price: 20,
-    });
-    await ticket.save();
+    const ticket = await createTickets();
 
     const order = Order.build({
       ticket,
@@ -49,11 +56,7 @@ describe("new order", () => {
     ).expect(400);
   });
   it("reserves a ticket", async () => {
-    const ticket = Ticket.build({
-      title: "concert",
-      price: 20,
-    });
-    await ticket.save();
+    const ticket = await createTickets();
 
     await postOrder(
       { ticketId: ticket.id },
@@ -63,11 +66,7 @@ describe("new order", () => {
   // it("", async () => {});p
 
   it("emits an order created event", async () => {
-    const ticket = Ticket.build({
-      title: "concert",
-      price: 20,
-    });
-    await ticket.save();
+    const ticket = await createTickets();
 
     await postOrder(
       { ticketId: ticket.id },
