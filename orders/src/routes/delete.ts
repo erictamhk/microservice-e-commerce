@@ -30,6 +30,8 @@ router.delete(
     order.status = OrderStatus.Cancelled;
     await order.save();
 
+    //TODO: need to publish the order cancelled event
+
     res.send(order);
   }
 );

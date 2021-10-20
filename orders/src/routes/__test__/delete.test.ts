@@ -41,9 +41,13 @@ describe("delete order", () => {
       .set("Cookie", getValidCookie(user))
       .send({})
       .expect(200);
+
     expect(response.body.id).toEqual(order.id);
     expect(response.body.ticket.id).toEqual(ticket.id);
     expect(response.body.status).toEqual(OrderStatus.Cancelled);
+
+    const updatedOrder = await Order.findById(order.id);
+    expect(updatedOrder?.status).toEqual(OrderStatus.Cancelled);
   });
   it("returns an error if one user tries to delete another users order", async () => {
     const user1 = {
@@ -65,4 +69,5 @@ describe("delete order", () => {
   });
   // it("", async () => {});
   // it("", async () => {});
+  it.todo("emits an order cancelled event");
 });
