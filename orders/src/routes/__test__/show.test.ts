@@ -44,7 +44,24 @@ describe("show order", () => {
     expect(response.body.id).toEqual(order.id);
     expect(response.body.ticket.id).toEqual(ticket.id);
   });
-  // it("", async () => {});
+  it("returns an error if one user tries to fetch another users order", async () => {
+    const user1 = {
+      email: "user1@mail.com",
+      id: "user1",
+    };
+    const user2 = {
+      email: "user2@mail.com",
+      id: "user2",
+    };
+    const ticket = await createTickets();
+    const order = await createOrder(ticket, user1.id);
+
+    const response = await request(app)
+      .get(`/api/orders/${order.id}`)
+      .set("Cookie", getValidCookie(user2))
+      .send({})
+      .expect(401);
+  });
   // it("", async () => {});
   // it("", async () => {});
 });
