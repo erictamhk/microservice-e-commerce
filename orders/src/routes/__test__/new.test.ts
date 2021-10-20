@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { Order, OrderStatus } from "../../models/order";
+import { Ticket } from "../../models/ticket";
 import { postOrder, getValidCookie } from "../../test/setup";
 
 describe("new order", () => {
@@ -24,7 +26,26 @@ describe("new order", () => {
     const ticketId = new mongoose.Types.ObjectId().toHexString();
     await postOrder({ ticketId }, { cookie: getValidCookie() }).expect(404);
   });
-  // it("return an error if the ticket is already reserved", async () => {});
+  it("return an error if the ticket is already reserved", async () => {
+    const ticket = Ticket.build({
+      title: "concert",
+      price: 20,
+    });
+    await ticket.save();
+
+    const order = Order.build({
+      ticket,
+      userId: "test-user-id",
+      status: OrderStatus.Created,
+      expiresAt: new Date(),
+    });
+    await order.save();
+
+    await postOrder(
+      { ticketId: ticket.id },
+      { cookie: getValidCookie() }
+    ).expect(400);
+  });
   // it("reserves a ticket", async () => {});
   // it("", async () => {});
 });
