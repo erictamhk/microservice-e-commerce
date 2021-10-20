@@ -3,6 +3,8 @@ import { Order, OrderStatus } from "../../models/order";
 import { Ticket } from "../../models/ticket";
 import { postOrder, getValidCookie } from "../../test/setup";
 
+import { natsWrapper } from "../../nats-wrapper";
+
 describe("new order", () => {
   it("can only be accessed if the user is signed in", async () => {
     await postOrder().expect(401);
@@ -58,6 +60,19 @@ describe("new order", () => {
       { cookie: getValidCookie() }
     ).expect(201);
   });
-  // it("", async () => {});
-  it.todo("emits an order created event");
+  // it("", async () => {});p
+
+  it("emits an order created event", async () => {
+    const ticket = Ticket.build({
+      title: "concert",
+      price: 20,
+    });
+    await ticket.save();
+
+    await postOrder(
+      { ticketId: ticket.id },
+      { cookie: getValidCookie() }
+    ).expect(201);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });

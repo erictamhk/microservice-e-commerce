@@ -4,6 +4,8 @@ import { Order, OrderDoc, OrderStatus } from "../../models/order";
 import { Ticket, TicketDoc } from "../../models/ticket";
 import { getValidCookie } from "../../test/setup";
 
+import { natsWrapper } from "../../nats-wrapper";
+
 const createTickets = async (): Promise<TicketDoc> => {
   const ticket = Ticket.build({
     title: `concert-test`,
@@ -69,5 +71,20 @@ describe("delete order", () => {
   });
   // it("", async () => {});
   // it("", async () => {});
-  it.todo("emits an order cancelled event");
+  it("emits an order cancelled event", async () => {
+    const user = {
+      email: "user1@mail.com",
+      id: "user1",
+    };
+    const ticket = await createTickets();
+    const order = await createOrder(ticket, user.id);
+
+    const response = await request(app)
+      .delete(`/api/orders/${order.id}`)
+      .set("Cookie", getValidCookie(user))
+      .send({})
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });
