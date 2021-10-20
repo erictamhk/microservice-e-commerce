@@ -1,4 +1,5 @@
 import request from "supertest";
+import mongoose from "mongoose";
 import { app } from "../../app";
 import {
   successTicket,
@@ -7,8 +8,20 @@ import {
   InputTicket,
   InputOptions,
 } from "../../test/setup";
-import { Ticket } from "../../models/ticket";
+import { Ticket, TicketDoc } from "../../models/ticket";
 import { natsWrapper } from "../../nats-wrapper";
+
+const createTickets = async (orderId: string): Promise<TicketDoc> => {
+  const ticket = Ticket.build({
+    title: `concert-test`,
+    price: 20,
+    userId: new mongoose.Types.ObjectId().toHexString(),
+  });
+  await ticket.save();
+  ticket.set({ orderId: orderId });
+  await ticket.save();
+  return ticket;
+};
 
 const updateTicket = (
   ticketId: string = "test-ticket-id",
@@ -97,5 +110,16 @@ describe("update", () => {
       { cookie: getValidCookie() }
     ).expect(200);
     expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
+
+  it("rejects updates if the ticket is reserved", async () => {
+    const orderId = new mongoose.Types.ObjectId().toHexString();
+    const ticket = await createTickets(orderId);
+
+    await updateTicket(
+      ticket.id,
+      { title: "updated-title", price: 200 },
+      { cookie: getValidCookie() }
+    ).expect(400);
   });
 });
