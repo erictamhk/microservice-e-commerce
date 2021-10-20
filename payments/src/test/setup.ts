@@ -1,8 +1,6 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import request from "supertest";
 import jwt from "jsonwebtoken";
-import { app } from "../app";
 
 jest.mock("../nats-wrapper");
 
@@ -29,34 +27,9 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-export const validTicket = {
-  title: "test title",
-  price: 100.0,
-};
-
-export interface InputTicket {
-  title?: string;
-  price?: number;
-}
-
 export interface InputOptions {
   cookie?: string[];
 }
-
-export const postTicket = (
-  ticket: InputTicket = { ...validTicket },
-  options: InputOptions = {}
-) => {
-  const agent = request(app).post("/api/tickets");
-  if (options.cookie) {
-    agent.set("Cookie", options.cookie);
-  }
-  return agent.send(ticket);
-};
-
-export const successTicket = () => {
-  return postTicket({ ...validTicket }, { cookie: getValidCookie() });
-};
 
 export const getValidCookie = (
   payload = {
