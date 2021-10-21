@@ -23,7 +23,11 @@ const OrderShow = ({ order }) => {
     <div>
       <h1>Order</h1>
       <h4>Id: {order.id}</h4>
-      <h4>Time left to pay: {timeLeft} seconds</h4>
+      {timeLeft < 0 ? (
+        <h1>Order Expired</h1>
+      ) : (
+        <h4>Time left to pay: {timeLeft} seconds</h4>
+      )}
     </div>
   );
 };
