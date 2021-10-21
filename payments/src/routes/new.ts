@@ -63,6 +63,9 @@ router.post(
     });
     await payment.save();
 
+    order.status = OrderStatus.Complete;
+    await order.save();
+
     new PaymentCreatedPublisher(natsWrapper.client).publish({
       id: payment.id,
       orderId: payment.orderId,
