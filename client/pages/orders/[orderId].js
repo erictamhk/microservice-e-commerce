@@ -12,18 +12,21 @@ const OrderShow = ({ order }) => {
     };
 
     findTimeLeft();
-    const timerId = setInterval(findTimeLeft, 1000);
+    const msLeft = new Date(order.expiresAt) - new Date();
+    if (msLeft > 0) {
+      const timerId = setInterval(findTimeLeft, 1000);
 
-    return () => {
-      clearInterval(timerId);
-    };
+      return () => {
+        clearInterval(timerId);
+      };
+    }
   }, []);
 
   return (
     <div>
       <h1>Order</h1>
       <h4>Id: {order.id}</h4>
-      {timeLeft < 0 ? (
+      {timeLeft <= 0 ? (
         <h1>Order Expired</h1>
       ) : (
         <h4>Time left to pay: {timeLeft} seconds</h4>
