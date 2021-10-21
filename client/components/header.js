@@ -23,7 +23,14 @@ const Header = ({ currentUser }) => {
         <a className="navbar-brand">GitTix</a>
       </Link>
       <div className="d-flex justify-content-end">
-        <ul className="nav d-flex align-items-center">{links}</ul>
+        <ul className="nav d-flex align-items-center">
+          <li className="nav-item">
+            <Link href="/tickets/new">
+              <a className="navbar-link">Create Ticket</a>
+            </Link>
+          </li>
+          {links}
+        </ul>
       </div>
     </nav>
   );
