@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Router from "next/router";
 import useRequest from "../../hooks/use-request";
 
 const NetTicket = () => {
@@ -8,7 +9,7 @@ const NetTicket = () => {
     url: "/api/tickets",
     method: "post",
     body: { title, price },
-    onSuccess: (data) => console.log(data),
+    onSuccess: () => Router.push("/"),
   });
 
   const onSubmit = async (event) => {
