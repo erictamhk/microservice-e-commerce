@@ -13,7 +13,7 @@ const OrderShow = ({ order, currentUser }) => {
     url: "/api/payments",
     method: "post",
     body: { orderId: order.id },
-    onSuccess: (payment) => console.log(payment),
+    onSuccess: () => Router.push("/orders"),
   });
 
   useEffect(() => {
