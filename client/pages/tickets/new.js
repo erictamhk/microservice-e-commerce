@@ -1,11 +1,19 @@
 import { useState } from "react";
+import useRequest from "../../hooks/use-request";
 
 const NetTicket = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
+  const { doRequest, errors } = useRequest({
+    url: "/api/tickets",
+    method: "post",
+    body: { title, price },
+    onSuccess: (data) => console.log(data),
+  });
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    await doRequest();
   };
 
   const onBlur = () => {
@@ -37,6 +45,7 @@ const NetTicket = () => {
             className="form-control"
           />
         </div>
+        {errors}
         <button className="btn btn-primary">Submit</button>
       </form>
     </div>
